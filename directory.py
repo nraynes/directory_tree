@@ -98,6 +98,6 @@ class Directory:
         if not self._is_root:
             print(f"{"".join(['  ' for _ in range(tab_count)])}{self._name}")
         else:
-            tab_count -= 1
+            tab_count -= 1  # If this is the root directory, don't display it.
         for subdirectory in sorted(self._contents.values(), key=lambda item: item.name):
             subdirectory.list_contents(tab_count+1)
