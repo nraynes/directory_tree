@@ -141,7 +141,7 @@ class FileSystem:
         """)
         while True:
             # Receive input from user.
-            input_str = input("@User: ")
+            input_str = input()
             input_list = input_str.split(" ")
             command = input_list[0].upper()
             args = input_list[1:]
