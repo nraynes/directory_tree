@@ -90,14 +90,12 @@ class Directory:
         except KeyError:
             return None
 
-    def list_contents(self, tab_count: int = 0) -> None:
+    def list_contents(self, tab_count: int = -1) -> None:
         """
         Prints the contents of this directory to the console.
         :param tab_count: How many tabs to prepend to output.
         """
         if not self._is_root:
-            print(f"{"".join(['  ' for _ in range(tab_count)])}{self._name}")
-        else:
-            tab_count -= 1  # If this is the root directory, don't display it.
+            print(f"{" " * tab_count}{self._name}")
         for subdirectory in sorted(self._contents.values(), key=lambda item: item.name):
             subdirectory.list_contents(tab_count+1)

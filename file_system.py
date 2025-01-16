@@ -23,6 +23,14 @@ class FileSystem:
         self._root = Directory("Root", is_root=True)
         self._not_found = None  # Used to store directory name not found in recursive search.
 
+    def get_split_path(self, path: str) -> list[str]:
+        """
+        Takes in a string directory path and returns that path in list form.
+        :param path: The input path string
+        :return: The ordered list of directories in the path.
+        """
+        return [item for item in path.split("/") if item != ""]
+
     def _get_dir_from_path(self, path: list[str], current_dir: Optional[Directory] = None) -> Optional[Directory]:
         """
         Retrieves the directory at the path provided.
@@ -57,7 +65,7 @@ class FileSystem:
         :param path: The path to the new directory.
         """
         # Acquire directory that will contain the new directory.
-        split_path = path.split("/")
+        split_path = self.get_split_path(path)
         new_dir_name = split_path[-1]
         dir_to_add_to = self._get_dir_from_path(split_path[0:-1]) if len(split_path) > 1 else self._root
 
@@ -73,7 +81,7 @@ class FileSystem:
         :param path: The path to the directory to delete.
         """
         # Acquire directory containing the directory that needs to be deleted.
-        split_path = path.split("/")
+        split_path = self.get_split_path(path)
         name_of_dir_to_delete = split_path[-1]
         dir_to_remove_dir_from = self._get_dir_from_path(split_path[0:-1]) if len(split_path) > 1 else self._root
 
@@ -94,10 +102,14 @@ class FileSystem:
         :param receiving_path: The path of the directory receiving the directory being moved.
         """
         # Acquire directory containing the directory that needs to be moved.
-        split_path = path.split("/")
-        split_path_to_receiving_dir = receiving_path.split("/")
+        split_path = self.get_split_path(path)
+        split_path_to_receiving_dir = self.get_split_path(receiving_path)
         dir_being_moved_name = split_path[-1]
         dir_containing_dir_being_moved = self._get_dir_from_path(split_path[0:-1]) if len(split_path) > 1 else self._root
+
+        if len(path) <= len(receiving_path) and path == receiving_path[0:len(path)]:
+            print("Cannot move parent directory into child.")
+            return None
 
         # Ensure all directories exist, then pop the directory from its current location and add it to the new one.
         if dir_containing_dir_being_moved is not None:
@@ -143,11 +155,11 @@ class FileSystem:
             # Receive input from user.
             input_str = input()
             input_list = input_str.split(" ")
-            command = input_list[0].upper()
+            command = input_list[0]
             args = input_list[1:]
 
             # Exit if applicable.
-            if command.upper() == "EXIT":
+            if command == "EXIT":
                 print("Exiting program...")
                 break
 
